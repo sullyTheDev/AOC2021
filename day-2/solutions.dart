@@ -14,7 +14,7 @@ void main() {
 }
 
 void problemSolution(Future<List<Command>> input) async {
-  var tracker = new PositionTracker();
+  var tracker = new PositionTrackerV1();
   var actualizedInput = await input;
 
   actualizedInput.forEach((element) {
@@ -44,11 +44,24 @@ class Command {
   Command(this.direction, this.value);
 }
 
-class PositionTracker {
+abstract class PositionTracker {
   int xPos = 0;
   int yPos = 0;
 
-  void moveHorizontal(String direction, int units) {
+  void moveHorizontally(String direction, int units);
+  void moveVertically(String direction, int units);
+  void move(String direction, int units);
+
+  List<int> currentPosition() {
+    return [this.xPos, this.yPos];
+  }
+}
+
+class PositionTrackerV1 extends PositionTracker {
+  int xPos = 0;
+  int yPos = 0;
+
+  void moveHorizontally(String direction, int units) {
     switch (direction) {
       case 'forward' :
         this.xPos += units;
@@ -72,23 +85,19 @@ class PositionTracker {
 
   void move(String direction, int units) {
     if(direction == 'forward') {
-      this.moveHorizontal(direction, units);
+      this.moveHorizontally(direction, units);
     } else if(direction == 'up' || direction == 'down') {
       this.moveVertically(direction, units);
     }
   }
-
-  List<int> currentPosition() {
-    return [this.xPos, this.yPos];
-  }
 }
 
-class PositionTrackerV2 {
+class PositionTrackerV2 extends PositionTracker {
   int xPos = 0;
   int yPos = 0;
   int aim = 0;
 
-  void moveHorizontal(String direction, int units) {
+  void moveHorizontally(String direction, int units) {
     switch (direction) {
       case 'forward' :
         this.xPos += units;
@@ -113,7 +122,7 @@ class PositionTrackerV2 {
 
   void move(String direction, int units) {
     if(direction == 'forward') {
-      this.moveHorizontal(direction, units);
+      this.moveHorizontally(direction, units);
     } else if(direction == 'up' || direction == 'down') {
       this.moveVertically(direction, units);
     }
